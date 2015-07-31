@@ -1,0 +1,36 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+Bucket_Size	ngx_hash_t_test.c	19;"	d	file:
+CLEANUP	Makefile	/^CLEANUP = rm -f $(TARGETS) *.o$/;"	m
+CORE_INCS	Makefile	/^CORE_INCS = -I. \\$/;"	m
+CXX	Makefile	/^CXX = gcc$/;"	m
+Max_Ip_Len	ngx_hash_t_test.c	46;"	d	file:
+Max_Num	ngx_hash_t_test.c	17;"	d	file:
+Max_Num2	ngx_hash_t_test.c	48;"	d	file:
+Max_Size	ngx_hash_t_test.c	18;"	d	file:
+Max_Url_Len	ngx_hash_t_test.c	45;"	d	file:
+NGX_ALLOC	Makefile	/^NGX_ALLOC = $(NGX_ROOT)\/objs\/src\/os\/unix\/ngx_alloc.o$/;"	m
+NGX_ARRAY	Makefile	/^NGX_ARRAY = $(NGX_ROOT)\/objs\/src\/core\/ngx_array.o$/;"	m
+NGX_HASH	Makefile	/^NGX_HASH = $(NGX_ROOT)\/objs\/src\/core\/ngx_hash.o$/;"	m
+NGX_HASH_ELT_SIZE	ngx_hash_t_test.c	21;"	d	file:
+NGX_PALLOC	Makefile	/^NGX_PALLOC = $(NGX_ROOT)\/objs\/src\/core\/ngx_palloc.o$/;"	m
+NGX_ROOT	Makefile	/^NGX_ROOT = \/home\/hzsunzixiang\/program\/nginx\/nginx-1.5.4$/;"	m
+NGX_STRING	Makefile	/^NGX_STRING = $(NGX_ROOT)\/objs\/src\/core\/ngx_string.o$/;"	m
+TARGETS	Makefile	/^TARGETS = ngx_hash_t_test$/;"	m
+TARGETS_C_FILE	Makefile	/^TARGETS_C_FILE = $(TARGETS).c$/;"	m
+add_urls_to_array	ngx_hash_t_test.c	/^ngx_array_t* add_urls_to_array(ngx_pool_t *pool)$/;"	f
+dump_hash	ngx_hash_t_test.c	/^void dump_hash(ngx_hash_t *hash, ngx_array_t *array)$/;"	f
+dump_hash_array	ngx_hash_t_test.c	/^void dump_hash_array(ngx_array_t* a)$/;"	f
+dump_pool	ngx_hash_t_test.c	/^void dump_pool(ngx_pool_t* pool)$/;"	f
+find_test	ngx_hash_t_test.c	/^void find_test(ngx_hash_t *hash, ngx_str_t addr[], int num)$/;"	f
+init_hash	ngx_hash_t_test.c	/^ngx_hash_t* init_hash(ngx_pool_t *pool, ngx_array_t *array)$/;"	f
+main	ngx_hash_t_test.c	/^int main(\/* int argc, char **argv *\/)$/;"	f
+ngx_cycle	ngx_hash_t_test.c	/^volatile ngx_cycle_t  *ngx_cycle;$/;"	v
+ngx_log_error_core	ngx_hash_t_test.c	/^void ngx_log_error_core(ngx_uint_t level, ngx_log_t *log, ngx_err_t err, const char *fmt, ...)$/;"	f
+urls	ngx_hash_t_test.c	/^static ngx_str_t urls[Max_Num] = {$/;"	v	file:
+urls2	ngx_hash_t_test.c	/^static ngx_str_t urls2[Max_Num2] = {$/;"	v	file:
+values	ngx_hash_t_test.c	/^static char* values[Max_Num] = {$/;"	v	file:

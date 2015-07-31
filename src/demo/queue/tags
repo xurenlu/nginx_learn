@@ -1,0 +1,30 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+CLEANUP	Makefile	/^CLEANUP = rm -f $(TARGETS) *.o$/;"	m
+CORE_INCS	Makefile	/^CORE_INCS = -I. \\$/;"	m
+CXX	Makefile	/^CXX = gcc$/;"	m
+Max_Num	ngx_queue_t_test.c	99;"	d	file:
+NGX_ALLOC	Makefile	/^NGX_ALLOC = $(NGX_ROOT)\/objs\/src\/os\/unix\/ngx_alloc.o$/;"	m
+NGX_PALLOC	Makefile	/^NGX_PALLOC = $(NGX_ROOT)\/objs\/src\/core\/ngx_palloc.o$/;"	m
+NGX_QUEUE	Makefile	/^NGX_QUEUE = $(NGX_ROOT)\/objs\/src\/core\/ngx_queue.o$/;"	m
+NGX_ROOT	Makefile	/^NGX_ROOT = \/home\/hzsunzixiang\/program\/nginx\/nginx-1.5.4$/;"	m
+NGX_STRING	Makefile	/^NGX_STRING = $(NGX_ROOT)\/objs\/src\/core\/ngx_string.o$/;"	m
+TARGETS	Makefile	/^TARGETS = ngx_queue_t_test$/;"	m
+TARGETS_C_FILE	Makefile	/^TARGETS_C_FILE = $(TARGETS).c$/;"	m
+dump_pool	ngx_queue_t_test.c	/^void dump_pool(ngx_pool_t* pool)$/;"	f
+dump_queue_from_head	ngx_queue_t_test.c	/^void dump_queue_from_head(ngx_queue_t *que)$/;"	f
+dump_queue_from_tail	ngx_queue_t_test.c	/^void dump_queue_from_tail(ngx_queue_t *que)$/;"	f
+main	ngx_queue_t_test.c	/^int main()$/;"	f
+my_point_cmp	ngx_queue_t_test.c	/^ngx_int_t my_point_cmp(const ngx_queue_t* lhs, const ngx_queue_t* rhs)$/;"	f
+my_point_queue_t	ngx_queue_t_test.c	/^} my_point_queue_t;$/;"	t	typeref:struct:__anon2	file:
+my_point_t	ngx_queue_t_test.c	/^} my_point_t;$/;"	t	typeref:struct:__anon1	file:
+ngx_cycle	ngx_queue_t_test.c	/^volatile ngx_cycle_t  *ngx_cycle;$/;"	v
+ngx_log_error_core	ngx_queue_t_test.c	/^void ngx_log_error_core(ngx_uint_t level, ngx_log_t *log, ngx_err_t err,$/;"	f
+point	ngx_queue_t_test.c	/^    my_point_t point;$/;"	m	struct:__anon2	file:
+queue	ngx_queue_t_test.c	/^    ngx_queue_t queue;$/;"	m	struct:__anon2	file:
+x	ngx_queue_t_test.c	/^    int x;$/;"	m	struct:__anon1	file:
+y	ngx_queue_t_test.c	/^    int y;$/;"	m	struct:__anon1	file:

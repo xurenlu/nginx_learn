@@ -1,0 +1,1 @@
+2014/01/12 16:57:29 [emerg] 26016#0: open() "/etc/nginx/mime.types" failed (2: No such file or directory) in ./object_echo/conf/nginx.conf:10

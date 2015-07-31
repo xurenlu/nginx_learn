@@ -1,0 +1,16 @@
+Configuration summary
+  + PCRE library is disabled
+  + OpenSSL library is not used
+  + md5 library is not used
+  + sha1 library is not used
+  + zlib library is not used
+
+  nginx path prefix: "./install"
+  nginx binary file: "./install/sbin/nginx"
+  nginx configuration prefix: "./install/conf"
+  nginx configuration file: "./install/conf/nginx.conf"
+  nginx pid file: "./install/logs/nginx.pid"
+  nginx error log file: "./install/logs/error.log"
+  nginx http access log file: "./install/./install/access_log"
+  nginx http client request body temporary files: "./install/client_request"
+

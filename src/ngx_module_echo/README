@@ -1,0 +1,341 @@
+
+目录
+
+    1 前言
+    2 开发nginx模块之Hello World篇(手把手走一遍)
+        2.1 进行echo模块的功能设计
+        2.2 准备nginx的源代码
+        2.3 准备好nginx的配置文件,越简单越好,并且要打开调试,关闭daemon模式;
+        2.4 创建nginx模块目录
+        2.5 编辑nginx模块的编译相关文件(config)
+    3 Nginx模块开发之入门介绍
+        3.1 Nginx 配置文件
+        3.2 Nginx 模块的分类
+        3.3 Nginx模块的加载
+    4 参考资料
+
+1 前言
+
+这是本人一边看着教程一边敲c代码记的笔记,写得比较随意。欢迎来信指出错误;(邮箱:xurenlu @ gmail.com ),blog:http://www.162cm.com/; 本文在网上随时更新: http://www.162cm.com/p/ngx_ext.html
+2 开发nginx模块之Hello World篇(手把手走一遍)
+2.1 进行echo模块的功能设计
+
+以下是本模块要能识别的nginx配置
+
+
+作为演示模块,我们这个模块仅仅完成以下功能:
+
+    读入nginx.conf中以echo开头的配置;echo是本模块新加入的命令,意思是直接输出; 例如:
+    在用户访问/hello时设置文件头为content-type=application/html;
+    在用户访问/hello时输出指定的欢迎词,比如“Hi,this is a demo module”;
+
+2.2 准备nginx的源代码
+
+可直接到[http://www.nginx.net/]下载,解压缩;
+
+tar -xzf nginx-0.8.9.tar.gz
+
+2.3 准备好nginx的配置文件,越简单越好,并且要打开调试,关闭daemon模式;
+
+vim nginx.conf
+
+worker_processes  1;
+daemon off; 
+master_process  off;
+error_log  /tmp/error.log debug;
+pid /tmp/nginx_demo.pid;
+events {
+    worker_connections  1024;
+}
+http {
+    include       /etc/nginx/mime.types;
+    sendfile        on;
+    keepalive_timeout  65;
+    tcp_nodelay        on;
+    server {
+        listen   8100;
+        server_name  localhost;
+        access_log  /tmp/access.log;
+        error_log  /tmp/error.log debug;
+        location /hello {
+            echo "Hi,this is a demo module";
+        }
+    }
+}
+
+2.4 创建nginx模块目录
+
+mkdir ngx_module_echo
+
+2.5 编辑nginx模块的编译相关文件(config)
+
+!#vim ngx_module_echo/config
+
+其内容为:
+
+ngx_addon_name=ngx_module_echo
+HTTP_MODULES="$HTTP_MODULES ngx_module_echo"
+NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/ngx_module_echo.c"
+CORE_LIBS="$CORE_LIBS "
+#CORE_LIBS="$CORE_LIBS -lm"
+
+其实这里的意思也很好理解,这里告诉nginx编译的时候应该在哪里找到模块的源文件;这里指出了我们要包含进来的源文件是ngx_module_echo.c,编辑它,具体内容后面会给出:
+
+#vim ngx_module_echo/ngx_module_echo.c
+
+,然后试着配置一下nginx:
+
+cd nginx-0.8.9
+~/nginx-0.8.9/#./configure --add-module=~/ngx_module_echo/
+
+,会报错:
+
+./configure: error: no ~/ngx_module_echo//config was found
+
+那是因为我们没有编辑好~/ngx_module_echo/ngx_module_echo.c这个文件,把它的内容改为:
+
+#include <ngx_config.h>
+#include <ngx_core.h>
+#include <ngx_http.h>
+
+static char* ngx_echo_readconf(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
+static void* ngx_echo_create_loc_conf(ngx_conf_t *cf);
+static char* ngx_echo_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child);
+
+typedef struct {
+    ngx_str_t ecdata;
+    ngx_flag_t           enable;
+} ngx_echo_loc_conf_t;
+
+static ngx_command_t  ngx_echo_commands[] = {
+    { ngx_string("echo"),
+      NGX_HTTP_LOC_CONF|NGX_CONF_TAKE1,
+      ngx_echo_readconf,
+      NGX_HTTP_LOC_CONF_OFFSET,
+      offsetof(ngx_echo_loc_conf_t, ecdata),
+      NULL },
+      ngx_null_command
+};
+
+
+static ngx_http_module_t  ngx_echo_module_ctx = {
+    NULL,                          /* preconfiguration */
+    NULL,           /* postconfiguration */
+
+    NULL,                          /* create main configuration */
+    NULL,                          /* init main configuration */
+
+    NULL,                          /* create server configuration */
+    NULL,                          /* merge server configuration */
+
+    ngx_echo_create_loc_conf,  /* create location configuration */
+    ngx_echo_merge_loc_conf /* merge location configuration */
+};
+
+
+ngx_module_t  ngx_module_echo = {
+    NGX_MODULE_V1,
+    &ngx_echo_module_ctx, /* module context */
+    ngx_echo_commands,   /* module directives */
+    NGX_HTTP_MODULE,               /* module type */
+    NULL,                          /* init master */
+    NULL,                          /* init module */
+    NULL,                          /* init process */
+    NULL,                          /* init thread */
+    NULL,                          /* exit thread */
+    NULL,                          /* exit process */
+    NULL,                          /* exit master */
+    NGX_MODULE_V1_PADDING
+};
+
+
+static ngx_int_t
+ngx_echo_handler(ngx_http_request_t *r)
+{
+    printf("called:ngx_echo_handler\n");
+    ngx_int_t     rc;
+    ngx_buf_t    *b;
+    ngx_chain_t   out;
+
+    ngx_echo_loc_conf_t  *cglcf;
+    cglcf = ngx_http_get_module_loc_conf(r, ngx_module_echo);
+
+    if (!(r->method & (NGX_HTTP_GET|NGX_HTTP_HEAD))) {
+        return NGX_HTTP_NOT_ALLOWED;
+    }
+    if (r->headers_in.if_modified_since) {
+        return NGX_HTTP_NOT_MODIFIED;
+    }
+
+    r->headers_out.content_type.len = sizeof("text/html") - 1;
+    r->headers_out.content_type.data = (u_char *) "text/html";
+
+
+
+    r->headers_out.status = NGX_HTTP_OK;
+    r->headers_out.content_length_n = cglcf->ecdata.len;
+
+    if (r->method == NGX_HTTP_HEAD) {
+        rc = ngx_http_send_header(r);
+
+        if (rc == NGX_ERROR || rc > NGX_OK || r->header_only) {
+            return rc;
+        }
+    }
+
+    b = ngx_pcalloc(r->pool, sizeof(ngx_buf_t));
+    if (b == NULL) {
+    ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "Failed to allocate
+                  response buffer.");
+        return NGX_HTTP_INTERNAL_SERVER_ERROR;
+    }
+
+    out.buf = b;
+    out.next = NULL;
+
+
+    b->pos = cglcf->ecdata.data;
+    b->last = cglcf->ecdata.data+(cglcf->ecdata.len);
+
+    b->memory = 1;
+    b->last_buf = 1;
+    rc = ngx_http_send_header(r);
+
+    if (rc == NGX_ERROR || rc > NGX_OK || r->header_only) {
+        return rc;
+    }
+    return ngx_http_output_filter(r, &out);
+}
+static char *
+ngx_echo_readconf(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
+{
+    printf("called:ngx_echo_readconf\n");
+    ngx_http_core_loc_conf_t  *clcf;
+
+    clcf = ngx_http_conf_get_module_loc_conf(cf, ngx_http_core_module);
+    clcf->handler = ngx_echo_handler;
+    ngx_conf_set_str_slot(cf,cmd,conf);
+    return NGX_CONF_OK;
+}
+
+
+static void *
+ngx_echo_create_loc_conf(ngx_conf_t *cf)
+{
+    printf("called:ngx_echo_create_loc_conf\n");
+    ngx_echo_loc_conf_t  *conf;
+
+    conf = ngx_pcalloc(cf->pool, sizeof(ngx_echo_loc_conf_t));
+    if (conf == NULL) {
+        return NGX_CONF_ERROR;
+    }
+
+    conf->ecdata.len=0;
+    conf->ecdata.data=NULL;
+    conf->enable = NGX_CONF_UNSET;
+    return conf;
+}
+static char *
+ngx_echo_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
+{
+    printf("called:ngx_echo_merge_loc_conf\n");
+    ngx_echo_loc_conf_t *prev = parent;
+    ngx_echo_loc_conf_t *conf = child;
+
+    ngx_conf_merge_str_value(conf->ecdata, prev->ecdata, 10);
+    ngx_conf_merge_value(conf->enable, prev->enable, 0);
+/**
+    if(conf->enable)
+        ngx_echo_init(conf);
+        */
+    return NGX_CONF_OK;
+    return NGX_CONF_OK;
+}
+
+下面好了,再回到nginx的源目录configure:
+
+~/nginx-0.8.9/#./configure --add-module=/home/renlu/ngx_module_echo/ --with-
+                                        debug
+.... 这里省却输出;
+make
+
+然后运行一下看看,先测一下配置文件的正确性:
+
+~/nginx-0.8.9/#./objs/nginx -c /home/renlu/ngx_module_echo/nginx.conf -t
+called:ngx_echo_create_loc_conf
+called:ngx_echo_create_loc_conf
+called:ngx_echo_create_loc_conf
+called:ngx_echo_readconf
+called:ngx_echo_merge_loc_conf
+called:ngx_echo_merge_loc_conf
+the configuration file /home/renlu/ngx_module_echo/nginx.conf syntax is ok
+configuration file /home/renlu/ngx_module_echo/nginx.conf test is successful
+
+运行之:
+
+~/nginx-0.8.9/#./objs/nginx -c /home/renlu/ngx_module_echo/nginx.conf
+called:ngx_echo_create_loc_conf
+called:ngx_echo_create_loc_conf
+called:ngx_echo_create_loc_conf
+called:ngx_echo_readconf
+called:ngx_echo_merge_loc_conf
+called:ngx_echo_merge_loc_conf
+
+在另一个终端执行一个curl:
+
+curl http://localhost:8100/hello
+Hi,this is a demo module
+
+好了,大功告成,nginx模块版的hello world就到这里了;
+3 Nginx模块开发之入门介绍
+3.1 Nginx 配置文件
+
+Nginx配置文件中的指令一般分为main,server,location,upstream四种;
+
+    main: 全局指令,比如本文中 worker_processes 1这些;
+    server:特定主机相关的配置;
+    location:特定uri相关的配置;
+    upstream:上游服务器相关配置,fastcgi,proxy_pass这类都可能用到;
+
+3.2 Nginx 模块的分类
+
+Nginx的模块一般也分为三种:
+
+    handlers :直接处理请求,进行输出内容,修改headers信息等操作;handlers处理器模块一般只能有一个;
+    filters (过滤器模块),对其他处理器模块输出的内容进行修改操作,最后再交给nginx去输出;
+    proxies (代理类模块),其实也就是upstream类的模块;主要跟后端一些服务比如fastcgi等操交互,代理,负载均衡都属于这类;
+    其实这些nginx模块具体的处理函数原型都是一样的:
+
+    static ngx_int_t ngx_http_module_handler (ngx_http_request_t *r);
+
+只是内部的处理各不相同,而且分为三种,也只是对它们具体做的事情的特点做了一个总结而已; 处理器模块一般是自己进行处理,过滤器模块是在原来的输出上进行修改,而上游模块是再去连接其他网络地址,请求一定内容来输出.
+3.3 Nginx模块的加载
+
+    Nginx 模块是被编译进入了nginx,而不像apache是编译一个so文件在配置文件中指定是否加载
+    解析配置文件时,Nginx 的各个模块都有机会去接手处理某个请求;但是,同一URI处理请求的模块只能有一个,所有的模块会“竟争”这个,不会出到地址”/index.php”这一个location同时被fastcgi和proxy两个模块处理的情况;至于竟争的过程….我还没弄清楚,需要继续读代码才知道;
+    nginx模块可以在任何时候发生效果,比如:
+        在读取配置文件之前
+        读到存在 location 和 server 下或其他任何部分下的每一个配置指令
+        当 Nginx 初始化全局部分配置时
+        当 Nginx 初始化server部分配置时
+        当 Nginx 将全局部分的配置与server部分的配置合并的时候
+        当 Nginx 初始化location部分配置的时候
+        当 Nginx 将其上层server配置与位置(location)部分配置合并的时候
+        当 Nginx 的主进程开始的时候
+        当一个新的工作进程(worker)开始的时候
+        当一个工作进程退出的时候
+        当主进程退出的时候
+        在处理请求时
+        在过滤回应(response)的头部
+        在过滤回应(response)的主体
+        选择一台后端服务器时
+        初始化到后端服务器的请求
+        重新初始化到后端的服务器的请求(reinit_request)
+        处理来自后端服务器的回复
+        完成与后端服务器的交互
+
+4 参考资料
+
+    http://www.evanmiller.org/nginx-modules-guide.html
+
+

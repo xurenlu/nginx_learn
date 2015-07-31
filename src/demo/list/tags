@@ -1,0 +1,22 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+CLEANUP	Makefile	/^CLEANUP = rm-f $(TARGETS) *.o$/;"	m
+CORE_INCS	Makefile	/^CORE_INCS =-I. \\$/;"	m
+CXX	Makefile	/^CXX = gcc$/;"	m
+NGX_ALLOC	Makefile	/^NGX_ALLOC =$(NGX_ROOT)\/objs\/src\/os\/unix\/ngx_alloc.o$/;"	m
+NGX_LIST	Makefile	/^NGX_LIST =$(NGX_ROOT)\/objs\/src\/core\/ngx_list.o$/;"	m
+NGX_PALLOC	Makefile	/^NGX_PALLOC =$(NGX_ROOT)\/objs\/src\/core\/ngx_palloc.o$/;"	m
+NGX_ROOT	Makefile	/^NGX_ROOT = \/home\/hzsunzixiang\/program\/nginx\/nginx-1.5.4$/;"	m
+NGX_STRING	Makefile	/^NGX_STRING =$(NGX_ROOT)\/objs\/src\/core\/ngx_string.o$/;"	m
+TARGETS	Makefile	/^TARGETS =ngx_list_t_test$/;"	m
+TARGETS_C_FILE	Makefile	/^TARGETS_C_FILE= $(TARGETS).c$/;"	m
+dump_list	ngx_list_t_test.c	/^void dump_list(ngx_list_t* list)$/;"	f
+dump_list_part	ngx_list_t_test.c	/^void dump_list_part(ngx_list_t* list, ngx_list_part_t* part)$/;"	f
+dump_pool	ngx_list_t_test.c	/^void dump_pool(ngx_pool_t* pool)$/;"	f
+main	ngx_list_t_test.c	/^int main()$/;"	f
+ngx_cycle	ngx_list_t_test.c	/^volatile ngx_cycle_t  *ngx_cycle;$/;"	v
+ngx_log_error_core	ngx_list_t_test.c	/^void ngx_log_error_core(ngx_uint_t level, ngx_log_t *log, ngx_err_t err,$/;"	f

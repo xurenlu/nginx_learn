@@ -1,0 +1,4 @@
+https://github.com/perusio/nginx-hello-world-module/blob/master/ngx_http_hello_world_module.c
+
+root@10-160-161-30:~/github/program/nginx-1.5.4# object_helloworld/sbin/nginx
+root@10-160-161-30:~/program/nginx/echo-nginx-module-0.01/src# curl http://localhost:8100/hello_world

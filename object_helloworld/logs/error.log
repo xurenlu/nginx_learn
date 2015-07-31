@@ -1,0 +1,4 @@
+2014/01/12 16:44:59 [emerg] 19024#0: invalid number of arguments in "hello_world" directive in ./object_helloworld/conf/nginx.conf:31
+2014/01/12 17:05:11 [emerg] 28821#0: unexpected "}" in ./object_helloworld/conf/nginx.conf:21
+2014/01/12 17:05:18 [emerg] 28827#0: unknown directive "hello,world" in ./object_helloworld/conf/nginx.conf:20
+2014/01/12 17:06:56 [emerg] 28910#0: invalid number of arguments in "hello_world" directive in ./object_helloworld/conf/nginx.conf:20
